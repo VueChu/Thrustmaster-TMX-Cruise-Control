@@ -12,11 +12,6 @@ void setup() {
 
 void loop() 
 {
-  //Low Pass  
-  int lowPassRead = analogRead(A0);
-  float lowPassWriteValue = lowPassRead * 0.249;
-  float lowPassVoltage = lowPassRead * (5.0/1023.0);
-  
   //Pedals
   int pedalReadValue = analogRead(A1);
   float pedalWriteValue = pedalReadValue * 0.249;
@@ -28,27 +23,21 @@ void loop()
     if(cruiseFlag == false)
     {
       pedalWriteValue_Locked = pedalWriteValue;
-      analogWrite(3, pedalWriteValue_Locked);
+      analogWrite(PWM_PIN, pedalWriteValue_Locked);
       cruiseFlag = true;
     }
-    
-    if(cruiseFlag == true && pedalWriteValue <= pedalWriteValue_Locked)
+    else
     {
-      Serial.println("This is true!!!!!!!!!");
-      pedalWriteValue = pedalWriteValue_Locked;
-      analogWrite(3, pedalWriteValue);
+      analogWrite(PWM_PIN, pedalWriteValue_Locked);
+      Serial.println(pedalWriteValue_Locked);
+      //delay(500);
+      //analogWrite(PWM_PIN, 0);
     }
-    
   }
   else
   {
     Serial.println("Cruise Control Off");
-    analogWrite(3, pedalWriteValue);
+    analogWrite(PWM_PIN, pedalWriteValue);
     cruiseFlag = false;
   }
-  lowPassVoltage = lowPassRead * (5.0/1023.0);
-  Serial.println(lowPassVoltage);
-  pedalVoltage = pedalReadValue * (5.0/1023.0);
-  Serial.println(pedalVoltage);
-
 }
